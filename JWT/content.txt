@@ -1,0 +1,16 @@
+
+
+
+
+
+
+// JWT- JSON WEB TOKENS 
+
+-- header  --> type, alg
+-- payload ---> claims
+-- signature  ---> secret key
+
+
+header.payload.signature
+
+xxxxx.yyyy.zzzz

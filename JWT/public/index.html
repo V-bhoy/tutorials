@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js" integrity="sha512-xIPqqrfvUAc/Cspuj7Bq0UtHNo/5qkdyngx6Vwt+tmbvTLDszzXM0G6c91LXmGrRx8KEPulT+AfOOez+TeVylg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        #form{
+            padding: 10px;
+        }
+        #box{
+            height: 300px;
+            background-color: yellow;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #btn1{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <form id="form">
+            <input placeholder="username" id="name" type="text"/>
+            <input placeholder="password" id="pass" type="password"/>
+            <input type="submit" />
+        </form>
+        <div id="box">
+            <button id="btn">Click me</button>
+            <button id="btn1">Logout</button>
+            <br/>
+            <div>
+                <h1 id="greet"></h1>
+            </div>
+            
+        </div>
+    </main>
+    <script>
+          let form = document.getElementById("form");
+          let btn = document.getElementById("btn");
+          let btn1 = document.getElementById("btn1");
+          let label = document.getElementById("greet");
+          form.addEventListener("submit",async(e)=>{
+               e.preventDefault();
+               let username = document.getElementById("name").value;
+               let password = document.getElementById("pass").value;
+               let res = await axios.post("/login",{username,password})
+               localStorage.setItem("token",res.data.token);
+          })
+          btn.addEventListener("click",async()=>{
+              let token = localStorage.getItem("token");
+              if(!token){
+                label.innerText="You are not logged in!";
+              }
+              else{
+                  let res = await axios.get("/login/user",{
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                   }
+                  });
+                  console.log(res.data);
+                  label.innerText=res.data.message;
+                  btn.style.display="none";
+                  btn1.style.display="block";
+    
+              }
+              
+          })
+          btn1.addEventListener("click",()=>{
+            btn1.style.display="none";
+            btn.style.display="block";
+            localStorage.clear();
+            label.innerText="You are logged out!"
+          })
+    </script>
+</body>
+</html>
